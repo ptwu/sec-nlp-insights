@@ -13,6 +13,7 @@ import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import CircularProgress from '@mui/material/CircularProgress';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -24,7 +25,8 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import CompanyTickers from "./company_tickers.json";
 
 ChartJS.register(
   CategoryScale,
@@ -51,14 +53,6 @@ export const options = {
   },
 };
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
 export const data = {
   labels,
   datasets: [
@@ -77,11 +71,7 @@ export const data = {
   ],
 };
 
-const tickers = [
-  "AAPL",
-  "GOOG",
-  "MSFT",
-]
+const tickers = Array(11643).fill().map((curr, index) => CompanyTickers[index].ticker);
 
 function ComboBox() {
   return (
@@ -109,7 +99,6 @@ const card1 = (
         multiline
         style={{ width: "100%" }}
         rows={15}
-        maxRows={15}
       />
     </CardContent>
     <CardActions>
@@ -136,6 +125,7 @@ const card2 = (
 
 function App() {
   const [isGraphRendered, setIsGraphRendered] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false);
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -157,7 +147,11 @@ function App() {
             <Card variant="outlined" style={{ minHeight: "75vh" }}>{card1}</Card>
           </Grid>
           <Grid item xs={6}>
-            <Card variant="outlined" style={{ minHeight: "75vh" }}>{card2}</Card>
+            <Card variant="outlined" style={{ minHeight: "75vh" }}>{
+              isLoadingData ?
+                <CircularProgress />
+                : card2
+            }</Card>
           </Grid>
         </Grid>
       </Container>
