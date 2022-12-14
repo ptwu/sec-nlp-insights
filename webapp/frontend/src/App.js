@@ -11,6 +11,45 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+import { useState } from 'react';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const labels = ['2016', '2017', '2018', '2019', '2020'];
+
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top',
+    },
+    title: {
+      display: true,
+      text: 'Comparing Results from Inference with Actual Data',
+    },
+  },
+};
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -20,22 +59,83 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const card = (
-  <>
-    <CardContent style={{ height: "70vh" }}>
+export const data = {
+  labels,
+  datasets: [
+    {
+      label: 'Actual data',
+      data: labels.map(() => Math.random()),
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    },
+    {
+      label: 'Predictions',
+      data: labels.map(() => Math.random()),
+      borderColor: 'rgb(53, 162, 235)',
+      backgroundColor: 'rgba(53, 162, 235, 0.5)',
+    },
+  ],
+};
 
+const tickers = [
+  "AAPL",
+  "GOOG",
+  "MSFT",
+]
+
+function ComboBox() {
+  return (
+    <Autocomplete
+      disablePortal
+      id="combo-box-demo"
+      options={tickers}
+      sx={{ width: 300 }}
+      renderInput={(params) => <TextField {...params} label="Ticker" />}
+    />
+  );
+}
+
+const card1 = (
+  <>
+    <CardContent>
       <Typography variant="h5" component="div">
         Inference
       </Typography>
+      <br />
+      <ComboBox />
+      <br />
+      <TextField
+        placeholder="Enter 10-K filing M&A (Item 7) text here."
+        multiline
+        style={{ width: "100%" }}
+        rows={15}
+        maxRows={15}
+      />
     </CardContent>
     <CardActions>
-      <Button variant="outlined" onClick={() => alert("yay")}>Learn More</Button>
+      <Button variant="outlined" onClick={() => alert("yay")}>Perform Inference</Button>
     </CardActions>
   </>
 );
 
 
+const card2 = (
+  <>
+    <CardContent>
+      <Typography variant="h5" component="div">
+        Results
+      </Typography>
+      <br />
+      <Line options={options} data={data} />
+      <CardActions>
+      </CardActions>
+    </CardContent>
+  </>
+);
+
+
 function App() {
+  const [isGraphRendered, setIsGraphRendered] = useState(false);
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -54,10 +154,10 @@ function App() {
       <Container maxWidth="xl">
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <Card variant="outlined">{card}</Card>
+            <Card variant="outlined" style={{ minHeight: "75vh" }}>{card1}</Card>
           </Grid>
           <Grid item xs={6}>
-            <Item>xs=4</Item>
+            <Card variant="outlined" style={{ minHeight: "75vh" }}>{card2}</Card>
           </Grid>
         </Grid>
       </Container>
