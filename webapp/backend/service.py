@@ -33,7 +33,7 @@ app = Flask(__name__)
 
 # Getting stock price changes (by percent of change), keys are stock tickers
 lgbm_model = pkl.load(open('lgbm.pkl', 'rb'))
-lr_model = pkl.load(open('LR.pkl', 'rb'))
+lr_model = pkl.load(open('LR_model.pkl', 'rb'))
 rf_model = pkl.load(open('RF.pkl', 'rb'))
 xgb_model = pkl.load(open('xgb.pkl', 'rb'))
 
